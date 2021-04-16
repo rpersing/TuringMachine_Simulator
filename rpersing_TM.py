@@ -1,10 +1,16 @@
 import sys
 import re
 
-# filename = sys.argv[1]
-filename = "wordhashword.tm"
-# given_string = sys.argv[2]
-given_string = "101#101"
+filename = sys.argv[1]
+# filename = "awa.tm"
+given_string = sys.argv[2]
+# given_string = "abbaab"
+mode = "non-verbose"
+
+try:
+    mode = sys.argv[3]
+except IndexError:
+    pass
 
 
 # Ask Stephen for help on this. Clearly you are doing something wrong and do not yet hold the
@@ -16,10 +22,12 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
             print("Malformed.")
             exit(0)
 
-    # symbol_at_pos = curr_string[tape_pos]
+    curr_string.insert(tape_pos, tape_state)
+    print(curr_string)
+    curr_string.pop(tape_pos)
 
     while tape_state != reject:
-
+        # curr_string.insert(tape_pos, tape_state)
         symbol_at_pos = curr_string[tape_pos]
 
         if tape_state == accept:
@@ -29,22 +37,32 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
         tape_state = transitions[tape_state][symbol_at_pos][0]
         if transitions[tape_state][symbol_at_pos][2] == "R":
+
             tape_pos += 1
-            if tape_pos >= len(curr_string):
+            curr_string.insert(tape_pos, tape_state)
+            print(curr_string)
+            curr_string.pop(tape_pos)
+            if tape_pos == len(curr_string):
                 curr_string.append("_")
+
         elif transitions[tape_state][symbol_at_pos][2] == "L":
+
             tape_pos -= 1
-            if curr_string[-1] == "_":
+            curr_string.insert(tape_pos, tape_state)
+            print(curr_string)
+            curr_string.pop(tape_pos)
+            if curr_string[-1] == "_" and tape_pos == len(curr_string) - 2:
                 curr_string.pop()
 
+        '''curr_string.insert(tape_state, tape_pos)
         print(curr_string)
+        curr_string.pop(tape_pos)'''
 
     if tape_state == reject:
         print("Rejected.")
 
 
 def transitionNV(curr_string, tape_state, accept, reject, tape_pos):
-
     for s in curr_string:
         if s not in INPUT_ALPHABET:
             print("Malformed.")
@@ -74,11 +92,6 @@ def transitionNV(curr_string, tape_state, accept, reject, tape_pos):
     if tape_state == reject:
         print("Rejected.")
 
-
-try:
-    mode = sys.argv[3]
-except IndexError:
-    pass
 
 # hard-coded idea to make sure I'm not smooth-brained
 '''start = "A"
@@ -139,5 +152,8 @@ for count, i in enumerate(transitions_lhs):
 # transitions["A"]["a"] = "(B,a,R)"
 
 tape_string = [c for c in given_string]
-# print(tape_string)
-transitionV(tape_string, start_state, accept_state, reject_state, 0)
+
+if mode == "non-verbose":
+    transitionNV(tape_string, start_state, accept_state, reject_state, 0)
+elif mode == "verbose":
+    transitionV(tape_string, start_state, accept_state, reject_state, 0)
