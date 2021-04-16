@@ -24,20 +24,21 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
 
     for s in curr_string:
         if s not in INPUT_ALPHABET:
-            print("Malformed.")
-            sys.exit(0)
+            return "Malformed."
 
     curr_string.insert(tape_pos, tape_state)
     print(curr_string)
     curr_string.pop(tape_pos)
 
-    while tape_state != reject:
+    while True:
         # curr_string.insert(tape_pos, tape_state)
         symbol_at_pos = curr_string[tape_pos]
 
         if tape_state == accept:
-            print("Accepted!")
-            sys.exit(0)
+            return "Accepted!"
+
+        if tape_state == reject:
+            return "Rejected."
 
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
         tape_state = transitions[tape_state][symbol_at_pos][0]
@@ -63,39 +64,42 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
         print(curr_string)
         curr_string.pop(tape_pos)'''
 
-    if tape_state == reject:
-        print("Rejected.")
-
 
 def transitionNV(curr_string, tape_state, accept, reject, tape_pos):
+
     for s in curr_string:
         if s not in INPUT_ALPHABET:
-            print("Malformed.")
-            sys.exit(0)
+            return "Malformed."
 
     # symbol_at_pos = curr_string[tape_pos]
 
-    while tape_state != reject:
+    while True:
+
+        if tape_pos >= len(curr_string):
+            curr_string.append("_")
+        if tape_pos < 0:
+            curr_string.insert(0, "_")
+
+        if tape_state == accept:
+            return "Accepted!"
+
+        if tape_state == reject:
+            return "Rejected."
 
         symbol_at_pos = curr_string[tape_pos]
 
-        if tape_state == accept:
-            print("Accepted!")
-            sys.exit(0)
-
+        # change symbol at current index of tape
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
+
+        # changes current state of TM
         tape_state = transitions[tape_state][symbol_at_pos][0]
         if transitions[tape_state][symbol_at_pos][2] == "R":
             tape_pos += 1
-            if tape_pos >= len(curr_string):
-                curr_string.append("_")
+
         elif transitions[tape_state][symbol_at_pos][2] == "L":
             tape_pos -= 1
             if curr_string[-1] == "_":
                 curr_string.pop()
-
-    if tape_state == reject:
-        print("Rejected.")
 
 
 # hard-coded idea to make sure I'm not smooth-brained
@@ -158,10 +162,9 @@ for count, i in enumerate(transitions_lhs):
 
 tape_string = [c for c in given_string]
 
-print("Filename: " + filename)
-print("Given string" + given_string)
-print("Mode: " + mode)
-'''if mode == "non-verbose":
+# print(transitions)
+
+if mode == "non-verbose":
     transitionNV(tape_string, start_state, accept_state, reject_state, 0)
 elif mode == "verbose":
-    transitionV(tape_string, start_state, accept_state, reject_state, 0)'''
+    transitionV(tape_string, start_state, accept_state, reject_state, 0)
