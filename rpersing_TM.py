@@ -1,11 +1,16 @@
 import sys
 import re
 
-filename = sys.argv[1]
-# filename = "awa.tm"
-given_string = sys.argv[2]
-# given_string = "abbaab"
-mode = "non-verbose"
+try:
+    filename = sys.argv[1]
+    # filename = "awa.tm"
+    given_string = sys.argv[2]
+    # given_string = "abbaab"
+    mode = "non-verbose"
+except IndexError:
+    print("Correct usage: [py file] [filename] [string] optional: verbose")
+    sys.exit(1)
+
 
 try:
     mode = sys.argv[3]
@@ -20,7 +25,7 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
     for s in curr_string:
         if s not in INPUT_ALPHABET:
             print("Malformed.")
-            exit(0)
+            sys.exit(0)
 
     curr_string.insert(tape_pos, tape_state)
     print(curr_string)
@@ -32,7 +37,7 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
 
         if tape_state == accept:
             print("Accepted!")
-            exit(0)
+            sys.exit(0)
 
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
         tape_state = transitions[tape_state][symbol_at_pos][0]
@@ -66,7 +71,7 @@ def transitionNV(curr_string, tape_state, accept, reject, tape_pos):
     for s in curr_string:
         if s not in INPUT_ALPHABET:
             print("Malformed.")
-            exit(0)
+            sys.exit(0)
 
     # symbol_at_pos = curr_string[tape_pos]
 
@@ -76,7 +81,7 @@ def transitionNV(curr_string, tape_state, accept, reject, tape_pos):
 
         if tape_state == accept:
             print("Accepted!")
-            exit(0)
+            sys.exit(0)
 
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
         tape_state = transitions[tape_state][symbol_at_pos][0]
@@ -153,7 +158,10 @@ for count, i in enumerate(transitions_lhs):
 
 tape_string = [c for c in given_string]
 
-if mode == "non-verbose":
+print("Filename: " + filename)
+print("Given string" + given_string)
+print("Mode: " + mode)
+'''if mode == "non-verbose":
     transitionNV(tape_string, start_state, accept_state, reject_state, 0)
 elif mode == "verbose":
-    transitionV(tape_string, start_state, accept_state, reject_state, 0)
+    transitionV(tape_string, start_state, accept_state, reject_state, 0)'''
