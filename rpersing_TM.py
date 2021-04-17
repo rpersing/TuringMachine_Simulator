@@ -24,7 +24,7 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
 
     for s in curr_string:
         if s not in INPUT_ALPHABET:
-            return "Malformed."
+            return print("Malformed.")
 
     curr_string.insert(tape_pos, tape_state)
     print(curr_string)
@@ -34,14 +34,7 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
         # curr_string.insert(tape_pos, tape_state)
         symbol_at_pos = curr_string[tape_pos]
 
-        if tape_state == accept:
-            return "Accepted!"
-
-        if tape_state == reject:
-            return "Rejected."
-
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
-        tape_state = transitions[tape_state][symbol_at_pos][0]
         if transitions[tape_state][symbol_at_pos][2] == "R":
 
             tape_pos += 1
@@ -60,46 +53,50 @@ def transitionV(curr_string, tape_state, accept, reject, tape_pos):
             if curr_string[-1] == "_" and tape_pos == len(curr_string) - 2:
                 curr_string.pop()
 
-        '''curr_string.insert(tape_state, tape_pos)
-        print(curr_string)
-        curr_string.pop(tape_pos)'''
+        tape_state = transitions[tape_state][symbol_at_pos][0]
+        if tape_state == accept:
+            curr_string.insert(tape_pos, tape_state)
+            print(curr_string)
+            curr_string.pop(tape_pos)
+            return print("Accepted!")
+
+        if tape_state == reject:
+            curr_string.insert(tape_pos, tape_state)
+            print(curr_string)
+            curr_string.pop(tape_pos)
+            return print("Rejected.")
 
 
 def transitionNV(curr_string, tape_state, accept, reject, tape_pos):
 
     for s in curr_string:
         if s not in INPUT_ALPHABET:
-            return "Malformed."
-
-    # symbol_at_pos = curr_string[tape_pos]
+            return print("Malformed.")
 
     while True:
-
-        if tape_pos >= len(curr_string):
-            curr_string.append("_")
-        if tape_pos < 0:
-            curr_string.insert(0, "_")
-
-        if tape_state == accept:
-            return "Accepted!"
-
-        if tape_state == reject:
-            return "Rejected."
-
+        # curr_string.insert(tape_pos, tape_state)
         symbol_at_pos = curr_string[tape_pos]
 
-        # change symbol at current index of tape
         curr_string[tape_pos] = transitions[tape_state][symbol_at_pos][1]
-
-        # changes current state of TM
-        tape_state = transitions[tape_state][symbol_at_pos][0]
         if transitions[tape_state][symbol_at_pos][2] == "R":
+
             tape_pos += 1
+            if tape_pos == len(curr_string):
+                curr_string.append("_")
 
         elif transitions[tape_state][symbol_at_pos][2] == "L":
+
             tape_pos -= 1
-            if curr_string[-1] == "_":
+            if curr_string[-1] == "_" and tape_pos == len(curr_string) - 2:
                 curr_string.pop()
+
+        tape_state = transitions[tape_state][symbol_at_pos][0]
+
+        if tape_state == accept:
+            return print("Accepted!")
+
+        if tape_state == reject:
+            return print("Rejected.")
 
 
 # hard-coded idea to make sure I'm not smooth-brained
